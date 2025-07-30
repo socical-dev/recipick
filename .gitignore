@@ -1,0 +1,35 @@
+# OS 공통
+.DS_Store
+Thumbs.db
+
+# Gradle/빌드 산출물
+.gradle/
+build/
+*/build/
+.cxx/
+.externalNativeBuild/
+
+# Android Studio/IDE
+.idea/
+*.iml
+
+# 로컬 환경 설정
+local.properties            # SDK 경로 등 로컬 환경
+
+# 서명/비밀정보 (절대 올리지 말 것)
+*.jks
+*.keystore
+keystore.properties
+*.pem
+*.p12
+*.keystore.jks
+secrets.properties
+*.env
+
+# Firebase/Crashlytics(정책에 따라)
+app/google-services.json    # 공개 저장소면 보통 제외(예시는 따로 제공)
+app/google-services.plist   # iOS 모듈 있을 때
+
+# 로그/캐시
+*.log
+captures/
