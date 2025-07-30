@@ -38,9 +38,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 4. 빌드
+      # Lint 먼저 실행(리포트 생성)
+      - name: Run Lint (debug)
+        run: ./gradlew lintDebug --stacktrace
+
+      # 실패 여부와 관계없이 리포트 업로드
+      - name: Upload Lint Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+            app/build/reports/lint-results-debug.sarif
+
+      # 4. 빌드-빌드 시 Lint는 스킵(중복 방지). 엄격 모드 원하면 -x lint 제거
       - name: Build project
-        run: ./gradlew build --stacktrace
+        run: ./gradlew assembleDebug --stacktrace -x lint
 
       # 5. 유닛 테스트 실행 (필요 시)
       - name: Run tests
