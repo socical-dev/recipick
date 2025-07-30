@@ -1,0 +1,55 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. JDK 세팅 (JDK 17)
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Gradle 캐시
+      - name: Gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4. 빌드
+      - name: Build project
+        run: ./gradlew build --stacktrace
+
+      # 5. 유닛 테스트 실행 (필요 시)
+      - name: Run tests
+        run: ./gradlew testDebugUnitTest
+
+      # 6. 빌드 아티팩트 저장 (APK 확인용)
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
